@@ -1,5 +1,8 @@
 from fastapi import FastAPI , HTTPException
 from App.schema import PostCreate ,PostResponse
+from db import create_db_and_tables, get_async_session, post
+from sqlalchemy.ext.asyncio import AsyncSession
+from contextlib import asynccontextmanager
 app = FastAPI()
 
 
@@ -31,7 +34,7 @@ def get_posts(limists: int = None):
    return text_posts 
 
 @app.get("/posts/{id}")
-def get_post(id: int):
+def get_post(id: int) -> PostResponse :
     if id not in text_posts :
        raise HTTPException(status_code=404, detail="Post not found") 
     return text_posts.get(id)
