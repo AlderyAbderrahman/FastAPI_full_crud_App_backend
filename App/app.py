@@ -20,12 +20,12 @@ async def upload_file(
     caption: str = Form(...), 
     db: AsyncSession = Depends(get_async_session)
     ):
-             post=post(caption=caption, url="fake_url",
+             Post=post(caption=caption, url="fake_url",
              file_type="image",
              file_name="fake_name"
              )
 
-             db.add(post)
+             db.add(Post)
              await db.commit()
 
 @app.get("/feed")
@@ -33,17 +33,17 @@ async def get_feed(db: AsyncSession = Depends(get_async_session)):
     result = await db.execute(select(post).order_by(post.created_at.desc()))
     posts=[row[0] for row in result.all()]
     posts_data=[]
-    for post in posts:
+    for Post in posts:
         posts_data.append(
               {
-                    "id": post.id,
-                    "caption": post.caption,
-                    "url": post.url,
-                    "file_type": post.file_type,
-                    "file_name": post.file_name,
-                    "created_at": post.created_at
+                    "id": Post.id,
+                    "caption": Post.caption,
+                    "url": Post.url,
+                    "file_type": Post.file_type,
+                    "file_name": Post.file_name,
+                    "created_at": Post.created_at
               }
         ) 
-        return posts_data
+    return {"posts": posts_data}
 
 
